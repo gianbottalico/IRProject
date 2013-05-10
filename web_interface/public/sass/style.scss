@@ -1,0 +1,208 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+
+$search-bar-color: #eee;
+$sans-serif-title-font: 'Ubuntu';
+
+$search-button-color: #C54DFE;
+
+$context-window-width: 598px;
+
+.search-bar {
+	background-color: $search-bar-color;
+	padding: 20px 20px 20px 40px;
+
+	font-family: $sans-serif-title-font;
+	font-size: 18px;
+	color: #222;
+	vertical-align: middle;
+	line-height: 26px;
+	border-bottom: 1px solid darken($search-bar-color, 10%);
+
+	.search-button {
+		border: 1px solid darken($search-button-color, 20%);
+		background-color: $search-button-color;
+		width: 50px;
+		background-image: url(../images/search.png);
+		background-position: center;
+		background-repeat: no-repeat;;
+		border-radius: 2px;
+
+		&:hover {
+			background-color: lighten($search-button-color, 5%);
+		};
+
+		&:active {
+			box-shadow: 2px 2px 10px rgba(0,0,0,0.2) inset;
+			background-color: darken($search-button-color, 10%);
+		};
+	}
+}
+
+.context-window {
+	width: $context-window-width - 20px;
+	padding: 10px;
+	position: absolute;
+	right: 0px;
+
+	.search-statistics {
+		color: #777;
+		font-size: 12px;
+	}
+
+	img {
+		max-width: 100%;
+		margin-bottom: 5px;
+		border: 2px solid black;
+	}
+
+	h1 {
+		font-size: 20px;
+		font-family: $sans-serif-title-font;
+		color: white;
+		margin: 20px 0px 5px;
+	}
+
+	p {
+		font-size: 14px;
+		color: #eee;
+	}
+}
+
+// $result-background-color: hsl(300, 10%, 56%);
+// $result-background-color: hsl(214, 30%, 56%);
+$result-background-color: #909090;
+$thumbnail-max-width: 250px;
+$thumbnail-max-height: 250px;
+$description-panel-height: 4em;
+
+body {
+	height: 100%;
+	background-color: darken($result-background-color, 40%);
+}
+
+b {
+	font-weight: bold;
+}
+
+.search-results {
+	width: 100%;
+	height: 100%;
+	padding-right: $context-window-width;
+	box-sizing: border-box;
+
+	.results {
+		border-left: 1px solid darken($result-background-color, 30%);
+	}
+
+	.results>li:hover {
+		background-color: lighten($result-background-color, 10%);
+	};
+
+	.results>li {
+		display: block;
+		float: left;
+		background-color: $result-background-color;
+		width: $thumbnail-max-width + 10px;
+		// Frame borders
+		border-top: 1px solid darken($result-background-color, 20%);
+		border-right: 1px solid darken($result-background-color, 30%);
+
+		.title-panel {
+			padding: 4px;
+			background-color: lighten($result-background-color, 10%);
+			box-shadow: 1px 1px 0px lighten($result-background-color, 20%) inset;
+			border-bottom: 1px solid darken($result-background-color, 10%);
+			font-size: 14px;
+			font-family: $sans-serif-title-font;
+			min-height: 14px;
+			white-space: nowrap;
+			height: 100%;
+			display: block;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		.thumbnail-panel {
+			box-shadow: 1px 1px 0px lighten($result-background-color, 10%) inset;
+			border-bottom: 1px solid darken($result-background-color, 10%);
+
+			text-align: center;
+			width: 100%;
+			height: $thumbnail-max-height + 20px;
+			line-height: $thumbnail-max-height + 20px;
+
+			img {
+				max-width: $thumbnail-max-width;
+				max-height: $thumbnail-max-height;
+				display: inline;
+				vertical-align: middle;
+				border: 2px solid black;
+				box-shadow: 0px 0px 8px rgba(255,255,255,0.5);
+			}
+		}
+
+		.description-panel {
+			box-shadow: 1px 1px 0px lighten($result-background-color, 10%) inset;
+			padding: 4px;
+
+			p {
+				font-size: 12px;
+				color: #222;
+			}
+
+			.tech-specs {
+				margin: 2px 0px 10px;
+				font-size: 11px;
+				color: #444;
+				height: 16px;
+
+				li {
+					float: left;
+					padding-left: 20px;
+					margin-right: 20px;
+					height: 16px;
+					max-width: 60px;
+					line-height: 16px;
+					overflow: hidden;
+					background-image: url(../images/techspecs.png);
+					background-repeat: no-repeat;
+
+					&.resolution {background-position: 0px -16*3px;}
+					&.aperture {background-position: 0px 0px;}
+					&.shutter-speed {background-position: 0px -16*1px;}
+					&.iso {background-position: 0px -16*2px;}
+				}
+			}
+
+			.image-description {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				height: $description-panel-height;
+			}
+		}
+	}
+}
+
+input, button {
+	vertical-align: top;
+	box-sizing: border-box;
+	height: 26px;
+
+	&[type=text] {
+		border: 1px solid #bbb;
+		padding: 4px;
+		width: 400px;
+		font-family: sans-serif;
+		font-size: 15px;
+		margin-left: 10px;
+		height: 26px;
+		box-sizing: border-box;
+	}
+}
