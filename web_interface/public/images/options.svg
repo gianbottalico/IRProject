@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="512px"
+   height="512px"
+   viewBox="0 0 512 512"
+   enable-background="new 0 0 512 512"
+   xml:space="preserve"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="1369833176_54_Settings.svg"
+   inkscape:export-filename="/srv/http/laravel_ir/public/images/options.png"
+   inkscape:export-xdpi="2.8099999"
+   inkscape:export-ydpi="2.8099999"><metadata
+     id="metadata9"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs7" /><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1143"
+     id="namedview5"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="260.33898"
+     inkscape:cy="256"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" /><path
+     d="M512,224v64h-66.906c-4.781,28.344-16.047,54.375-31.828,77.031l67.109,58.344l-46.188,57.062l-73.984-64.345  c-21.547,14-45.812,24.22-72.202,28.688V512h-64v-66.906c-26.47-4.469-50.767-14.781-72.328-28.906l-73.859,64.25l-46.188-57.062  l67.219-58.469C83.188,342.281,72,316.312,67.219,288H0v-64h66.905c4.781-28.344,16.048-54.375,31.828-77.031L31.625,88.625  l46.188-57.062l73.984,64.344c21.547-14,45.812-24.219,72.203-28.688V0h64v67.219c26.391,4.469,50.655,14.688,72.202,28.688  l73.984-64.344l46.188,57.062l-67.109,58.344c15.781,22.656,27.047,48.688,31.828,77.031H512z M256,160c-53.017,0-96,42.969-96,96  s42.983,96,96,96c53.016,0,96-42.969,96-96S309.016,160,256,160z"
+     id="path3"
+     style="fill:#888a85" /></svg>

@@ -74,14 +74,16 @@ def etlInsertPhoto(conn, photos):
 		if r[0] == 0:
 			q = ( 'INSERT INTO flat_photos(id, owner, url, width, height, views, title,'
 				 'latitude, longitude, license, machine_tags, dateupload, description, last_update,'
-				 'ownername, pathalias, datetaken, tags, comments, camera, lens, exposure, aperture, focal_length, iso_speed, thumbnail_url )'
-				 'VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ,%s ,%s, %s, %s ,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+				 'ownername, pathalias, datetaken, tags, comments, camera, lens, exposure, aperture,'
+				 'focal_length, iso_speed, c_exposure, c_aperture, c_focal_length, c_iso_speed, thumbnail_url )'
+				 'VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ,%s ,%s, %s, %s ,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 				)
 
 			cur.execute(q, (photo.id, photo.owner, photo.url, photo.width, photo.height, photo.views, photo.title
 				,photo.latitude, photo.longitude, photo.license, photo.machine_tags, photo.dateupload,photo.description, photo.last_update
 				,photo.ownername, photo.pathalias, photo.datetaken, photo.tags, photo.comments, photo.camera, photo.lens, photo.exposure
-				,photo.aperture, photo.focal_length, photo.iso_speed, photo.thumbnail))
+				,photo.aperture, photo.focal_length, photo.iso_speed, photo.c_exposure
+				,photo.c_aperture, photo.c_focal_length, photo.c_iso_speed, photo.thumbnail))
 	conn.commit()
 	cur.close()
 

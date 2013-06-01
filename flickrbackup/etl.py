@@ -11,6 +11,12 @@ class ExifData(object):
 		self.aperture = ''
 		self.focal_length = ''
 		self.iso_speed = ''
+
+		self.c_exposure = None
+		self.c_aperture = None
+		self.c_focal_length = None
+		self.c_iso_speed = None
+
 		self.lens = ''
 
 class IrEtl:
@@ -95,6 +101,12 @@ class IrEtl:
 		sanph.aperture = exifObject.aperture
 		sanph.focal_length = exifObject.focal_length
 		sanph.iso_speed = exifObject.iso_speed
+
+		sanph.c_exposure = exifObject.c_exposure
+		sanph.c_aperture = exifObject.c_aperture
+		sanph.c_focal_length = exifObject.c_focal_length
+		sanph.c_iso_speed = exifObject.c_iso_speed
+
 		sanph.lens = exifObject.lens;
 		return sanph
 
@@ -104,6 +116,68 @@ class IrEtl:
 			for single in comments['comments']['comment']:
 				longComment += single['_content'] + '\n'
 		return longComment
+
+	def _canonicalExposure(self, exposure):
+		val = 0
+		if exposure.strip() == '':
+			return None
+		elif '/' in exposure: # 1/250
+			try:
+				splitters = exposure.split('/')
+				val = float(splitters[0]) / float(splitters[1])
+			except ValueError:
+				return None
+		else: # 0.8
+			try:
+				val = float(exposure)
+			except ValueError:
+				return None
+		if val > 0:
+			return val
+		return None
+
+	def _canonicalAperture(self, aperture):
+		val = 0
+		if aperture.strip() == '':
+			return None
+		elif '/' in aperture: # 1/250
+			try:
+				splitters = aperture.split('/')
+				val = float(splitters[0]) / float(splitters[1])
+			except ValueError:
+				return None
+		else: # 0.8
+			try:
+				val = float(aperture)
+			except ValueError:
+				return None
+		if val > 0 and val < 128: # Range I'm familiar with is: 0.95 - 32 but who knows!
+			return val
+		return None
+
+	def _canonicalFocalLength(self, focalLength):
+		focalLength = focalLength.replace("mm", "");
+		val = 0
+		if focalLength.strip() == '':
+			return None
+		elif '/' in focalLength: # 1/250
+			try:
+				splitters = focalLength.split('/')
+				val = float(splitters[0]) / float(splitters[1])
+			except ValueError:
+				return None
+		else: # 0.8
+			try:
+				val = float(focalLength)
+			except ValueError:
+				return None
+		if val > 0: # Range I'm familiar with is: 8 mm to 4000?!
+			return val
+		return None
+
+	def _canonicalISO(self, iso):
+		return self._canonicalFocalLength(iso)
+
 	def extractExifData(self, exifEntity):
 		result = ExifData()
 		if exifEntity is not None and 'photo' in exifEntity:
@@ -112,12 +186,16 @@ class IrEtl:
 			for item in exifEntity['photo']['exif']:
 				if 'Exposure' == item['label']:
 					result.exposure = item['raw']['_content']
+					result.c_exposure = self._canonicalExposure(result.exposure)
 				elif 'Aperture' in item['label']:
 					result.aperture = item['raw']['_content']
+					result.c_aperture = self._canonicalAperture(result.aperture)
 				elif 'Focal Length' in item['label']:
 					result.focal_length = item['raw']['_content']
+					result.c_focal_length = self._canonicalFocalLength(result.focal_length)
 				elif 'ISO' in item['label']:
 					result.iso_speed = item['raw']['_content']
+					result.c_iso_speed = self._canonicalISO(result.iso_speed)
 				elif 'Lens' == item['label'] or 'Lens Model' == item['label']:
 					result.lens = item['raw']['_content']
 		return result

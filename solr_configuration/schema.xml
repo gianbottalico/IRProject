@@ -96,10 +96,10 @@
 		<field name="datetaken"    type="tdate"        indexed="true"  stored="true"  multiValued="false" /> 
 		<field name="camera"       type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
 		<field name="lens"         type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
-		<field name="exposure"     type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
-		<field name="aperture"     type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
-		<field name="focal_length" type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
-		<field name="iso"          type="text_keyword" indexed="true"  stored="true"  multiValued="false" /> 
+		<field name="exposure"     type="double"       indexed="true"  stored="true"  multiValued="false" /> 
+		<field name="aperture"     type="double"       indexed="true"  stored="true"  multiValued="false" /> 
+		<field name="focal_length" type="double"       indexed="true"  stored="true"  multiValued="false" /> 
+		<field name="iso"          type="double"       indexed="true"  stored="true"  multiValued="false" /> 
 		<field name="dateuploaded" type="tdate"        indexed="true"  stored="true"  multiValued="false" /> 
 		<field name="last_update"  type="tdate"        indexed="true"  stored="true"  multiValued="false" /> 
 

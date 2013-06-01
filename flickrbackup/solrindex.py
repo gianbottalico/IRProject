@@ -5,6 +5,7 @@ from time import strptime
 _solr_instance = None
 
 def initSolr():
+	global _solr_instance
 	solrurl = input('SOLR url [http://localhost:8983/photos]: ')
 	if solrurl == '': solrurl = 'http://localhost:8983/photos'
 	_solr_instance = pysolr.Solr('http://localhost:8983/photos')
@@ -35,10 +36,10 @@ def addToSolrIndex(pictures):
 			'datetaken':    fixdate(picture.datetaken),
 			'camera':       picture.camera,
 			'lens':         picture.lens,
-			'exposure':     picture.exposure,
-			'aperture':     picture.aperture,
-			'focal_length': picture.focal_length,
-			'iso':          picture.iso_speed,
+			'exposure':     picture.c_exposure,
+			'aperture':     picture.c_aperture,
+			'focal_length': picture.c_focal_length,
+			'iso':          picture.c_iso_speed,
 			'dateuploaded': fixdate(picture.dateupload),
 			'last_update':  fixdate(picture.last_update)
 		}

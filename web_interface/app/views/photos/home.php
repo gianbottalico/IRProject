@@ -2,7 +2,7 @@
 <html ng-app>
 	<head>
 		<meta charset="utf-8">
-		<title>Angular tests</title>
+		<title>Image Search Engine</title>
 
 		<!-- Make it sexy -->
 		<link rel="stylesheet" href="css/style.css">
@@ -14,14 +14,43 @@
 	<body>
 		<div ng-controller="ImageListCtrl">
 			<header class="search-bar">
-				Search: <input type="text" ng-model="search_string" ng-change="deferredSearch()">
+				<h1>Search:</h1> <input type="text" ng-model="search_string" ng-change="deferredSearch()" class="search-field">
 				<button class="search-button" ng-click="search()"></button>
+				<button class="toggle-options-button" ng-click="toggleOptions()"></button>
+
+				<section class="advanced-search" ng-hide="!advanced_search">
+					<p>
+						<label for="main-search-field">main search field:</label>
+						<select name="main-search-field" ng-model="advanced_options.main_field">
+							<option value="title">Title</option>
+							<option value="description">Description</option>
+							<option value="tags">Tags</option>
+							<option value="comments">Comments</option>
+						</select>
+					</p>
+					<p>
+						<label>ISO range:</label>
+						<input type="text" ng-model="advanced_options.min_iso"> to <input type="text" ng-model="advanced_options.max_iso">
+					</p>
+					<p>
+						<label >Exposure range:</label>
+						<input type="text" ng-model="advanced_options.min_exposure"> to <input type="text" ng-model="advanced_options.max_exposure"> s
+					</p>
+					<p>
+						<label>Aperture range (F value):</label>
+						<input type="text" ng-model="advanced_options.min_aperture"> to <input type="text" ng-model="advanced_options.max_aperture">
+					</p>
+					<p>
+						<label>Focal Length range:</label>
+						<input type="text" ng-model="advanced_options.min_focallength"> to <input type="text" ng-model="advanced_options.max_focallength"> mm
+					</p>
+				</section>
 			</header>
 
 			<section class="context-window">
 				<p class="search-statistics">Found {{images.length}} results in {{search_time | number:2}}s</p>
 				<h1>{{selection.title}}</h1>
-				<img ng-hide="!selection" src="{{selection.url}}" alt="">
+				<img ng-hide="!selection" ng-src="{{selection.url}}" alt="">
 				<p>{{selection.description}}</p>
 			</section>
 
@@ -30,7 +59,7 @@
 					<li ng-repeat="image in images" ng-click="select(image)">
 						<h2 class="title-panel">{{image.title}}</h2>
 						<div class="thumbnail-panel">
-							<img src="{{image.thumbnail_url}}" alt="{{image.image_title}}">
+							<img ng-src="{{image.thumbnail_url}}" alt="{{image.image_title}}">
 						</div>
 						<div class="description-panel">
 							<ul class="tech-specs">
