@@ -1,8 +1,36 @@
+angular.module('irProject', ['filters', 'infinite-scroll']);
+
+
+angular.module('filters', []).
+    filter('truncate', function () {
+        return function (text, length, end) {
+            if (isNaN(length))
+                length = 10;
+
+            if (end === undefined)
+                end = "...";
+
+            if (text.length <= length || text.length - end.length <= length) {
+                return text;
+            }
+            else {
+                return String(text).substring(0, length-end.length) + end;
+            }
+
+        };
+    });
+
 function ImageListCtrl($scope, $http) {
 	$scope.search_string = "";
 	$scope.matches = 0;
 	$scope.search_time = 0;
+	$scope.search_params = {};
+	$scope.search_url = '';
+
+	$scope.current_page = -1; 
 	$scope.images = [];
+	var max_images_per_page = 30;
+	$scope.last_search_results = -1;
 
 	$scope.advanced_search = false;
 	$scope.advanced_options = {
@@ -18,7 +46,6 @@ function ImageListCtrl($scope, $http) {
 	}
 
 	// Deferred search handling
-	var search_lock = false;
 	var last_search_term = "";
 	var deferredSearchTimeout;
 	$scope.deferredSearch = function() {
@@ -33,15 +60,19 @@ function ImageListCtrl($scope, $http) {
 	}
 
 	$scope.search = function() {
-		if(last_search_term == $scope.search_string) return;
-		if(search_lock) return;
-		search_lock = true;
+		if(last_search_term == $scope.search_string) { 
+			return;
+		}
+		if($scope.search_lock) {
+			return;
+		}
+
+		$scope.search_lock = true;
 		last_search_term = $scope.search_string;
 		console.log("Lock Acquired for " + last_search_term);
 
-		var params;
 		if ($scope.advanced_search) {
-			params = {
+			$scope.search_params = {
 				q: last_search_term,
 				main_field:      $scope.advanced_options.main_field,
 				min_iso:         $scope.advanced_options.min_iso,
@@ -54,29 +85,14 @@ function ImageListCtrl($scope, $http) {
 				max_focallength: $scope.advanced_options.max_focallength
 			};
 		} else {
-			params = {q: last_search_term };
+			$scope.search_params = {q: last_search_term };
 		}
 
-		$http({
-			url: 'api',
-			method: 'GET',
-			params: params
-		}).success(function(data) {
-			$scope.images = data;
-			$scope.selection = null;
-
-
-			// Defere lock release
-			setTimeout(function() {
-				// Release the lock!
-				console.log("Lock released");
-				search_lock = false;
-
-				// Has the search string changed in the meantime?
-				if(last_search_term != $scope.search_string)
-					$scope.search();
-			}, 50);
-		});
+		$scope.search_url = 'api';
+		$scope.current_page = 0;
+		$scope.search_lock = false;
+		$scope.last_search_results = -1;
+		$scope.loadNextPage();
 	};
 
 	// Handle image selection
@@ -84,6 +100,69 @@ function ImageListCtrl($scope, $http) {
 		$scope.selection = image;
 	};
 
+	// Handle More Like This Search
+	$scope.moreLikeThis = function(image) {
+
+		$scope.search_params = {
+			q: image.id
+		}
+		$scope.search_url = 'morelikethis';
+		$scope.current_page = 0;
+		$scope.last_search_results = -1;
+		
+		$scope.loadNextPage();
+	}
+
+	// Get Next Result Page
+	$scope.loadNextPage = function() {
+		
+		if ( $scope.current_page == -1 ) {
+			return;
+		}
+		if ($scope.search_lock) {
+			return;
+		}
+		//last page is reached 
+		if ($scope.last_search_results != -1 && $scope.last_search_results < max_images_per_page)
+		{
+			return;
+		} 
+		//Reset images data if a new search occours
+		if ($scope.current_page == 0) {
+			$scope.images = [];
+		}
+
+		$scope.search_lock = true;
+
+		$scope.search_params['current_page'] = $scope.current_page += 1;
+
+		$http({
+			url: $scope.search_url,
+			method: 'GET',
+			params: $scope.search_params
+		}).success(function(data) {
+			$scope.last_search_results = data.length;
+			$scope.images.push.apply($scope.images,data);
+			//unbind context windows only on first page
+			if ($scope.current_page == 1) {
+				$scope.selection = null;
+			}
+			// Defere lock release
+			setTimeout(function() {
+				// Release the lock!
+				console.log("Lock released");
+				$scope.search_lock = false;
+
+				// Has the search string changed in the meantime?
+				if(last_search_term != $scope.search_string)
+					$scope.search();
+			}, 50);
+		}).error(function(){
+			// Release the lock!
+			console.log("Lock released");
+			$scope.search_lock = false;
+		});
+	}
 	// Handle advanced options
 	$scope.toggleOptions = function() {
 		$scope.advanced_search = !$scope.advanced_search;

@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app>
+<html ng-app="irProject">
 	<head>
 		<meta charset="utf-8">
 		<title>Image Search Engine</title>
@@ -8,7 +8,9 @@
 		<link rel="stylesheet" href="css/style.css">
 
 		<!-- Load Angular and let magic happen -->
+		<script src="components/jquery/jquery.js"></script>
 		<script src="components/angular/angular.js"></script>
+		<script src="components/ngInfiniteScroll/ng-infinite-scroll.js"></script>
 		<script src="javascript/script.js"></script>
 	</head>
 	<body>
@@ -54,8 +56,8 @@
 				<p>{{selection.description}}</p>
 			</section>
 
-			<section class="search-results">
-				<ul class="results">
+			<section class="search-results"  infinite-scroll="loadNextPage()" infinite-scroll-distance="1">
+				<ul class="results" >
 					<li ng-repeat="image in images" ng-click="select(image)">
 						<h2 class="title-panel">{{image.title}}</h2>
 						<div class="thumbnail-panel">
@@ -69,8 +71,13 @@
 								<li class="iso"ng-hide="!image.iso_speed">{{image.iso_speed}}</li>
 							</ul>
 							<div class="image-description">
-								<p ng-bind-html-unsafe="image.description"></p>
+								<p>
+									{{image.description | truncate:150:"..."}}
+								</p>
 							</div>
+							<div class="more-like-this-panel">
+								<button ng-click="moreLikeThis(image)">More Like This</button>
+							</div>								
 						</div>
 					</li>
 				</ul>

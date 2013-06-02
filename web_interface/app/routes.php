@@ -15,4 +15,5 @@
 
 
 Route::get('/api', 'HomeController@api');
+Route::get('/morelikethis', 'HomeController@more');
 Route::get('/', 'HomeController@index');

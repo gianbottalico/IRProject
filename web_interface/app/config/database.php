@@ -66,9 +66,9 @@ return array(
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',
-			'database' => 'flickr',
+			'database' => 'irproject',
 			'username' => 'postgres',
-			'password' => 'postgres',
+			'password' => 'devdevdev',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 			'schema'   => 'public',

@@ -2,18 +2,7 @@
 
 class HomeController extends BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
-	*/
+	private $imagesPerPage = 30;
 
 	public function __construct() {
 		$this->solr_endpoint = array(
@@ -21,26 +10,10 @@ class HomeController extends BaseController {
 				'localhost' => array(
 					'host' => 'localhost',
 					'port' => 8983,
-					'path' => '/photos',
+					'path' => '/solr',
 				)
 			)
 		);
-	}
-
-	private static function parse_number($input) {
-		if (empty($input)) return null;
-		if (strstr($input, "/") !== false) {
-			$splitters = explode("/", $input);
-			if (count($splitters) != 2) return null;
-			$a = self::parse_number($splitters[0]);
-			$b = self::parse_number($splitters[1]);
-			if ($b == 0) return null;
-			return $a / $b;
-		} elseif (is_numeric($input)) {
-			return (float)$input;
-		} else {
-			return null;
-		}
 	}
 
 	public function index()
@@ -51,6 +24,7 @@ class HomeController extends BaseController {
 	public function api()
 	{
 		$q = Input::get('q');
+		$current_page = Input::get('current_page');
 		$simple_query = !Input::has('main_field');
 
 		$client = new Solarium\Client($this->solr_endpoint);
@@ -83,41 +57,69 @@ class HomeController extends BaseController {
 			$helper = $query->getHelper();
 
 			// Filter by ISO:
-			$iso_min = self::parse_number(Input::get('min_iso'));
-			$iso_max = self::parse_number(Input::get('max_iso'));
+			$iso_min = Helper::parseNumber(Input::get('min_iso'));
+			$iso_max = Helper::parseNumber(Input::get('max_iso'));
 			if (!is_null($iso_min) && !is_null($iso_max)) {
 				$query->createFilterQuery('iso_filter')->setQuery($helper->rangeQuery('iso', $iso_min, $iso_max));
 			}
 
 			// Filter by Exposure:
-			$exposure_min = self::parse_number(Input::get('min_exposure'));
-			$exposure_max = self::parse_number(Input::get('max_exposure'));
+			$exposure_min = Helper::parseNumber(Input::get('min_exposure'));
+			$exposure_max = Helper::parseNumber(Input::get('max_exposure'));
 			if (!is_null($exposure_min) && !is_null($exposure_max)) {
 				$query->createFilterQuery('exposure_filter')->setQuery($helper->rangeQuery('exposure', $exposure_min, $exposure_max));
 			}
 
 			// Filter by Aperture:
-			$aperture_min = self::parse_number(Input::get('min_aperture'));
-			$aperture_max = self::parse_number(Input::get('max_aperture'));
+			$aperture_min = Helper::parseNumber(Input::get('min_aperture'));
+			$aperture_max = Helper::parseNumber(Input::get('max_aperture'));
 			if (!is_null($aperture_min) && !is_null($aperture_max)) {
 				$query->createFilterQuery('aperture_filter')->setQuery($helper->rangeQuery('aperture', $aperture_min, $aperture_max));
 			}
 
 			// Filter by Focal Length:
-			$focallength_min = self::parse_number(Input::get('min_focallength'));
-			$focallength_max = self::parse_number(Input::get('max_focallength'));
+			$focallength_min = self::parseNumber(Input::get('min_focallength'));
+			$focallength_max = self::parseNumber(Input::get('max_focallength'));
 			if (!is_null($focallength_min) && !is_null($focallength_max)) {
 				$query->createFilterQuery('focallength_filter')->setQuery($helper->rangeQuery('focal_length', $focallength_min, $focallength_max));
 			}
 		}
 
 		$query->setQuery($q);
-		$query->setRows(50);
+		//Pagination
+		$query->setStart(($current_page -1 ) * $this->imagesPerPage)->setRows($this->imagesPerPage);
 		$query->setFields(array('id'));
 		$resultset = $client->select($query);
 
 		$ids = array();
 		foreach($resultset as $document) {
+			$photo = Photo::find($document->id);
+			$ids[]= $photo->toArray();
+		}
+
+		return json_encode($ids);
+	}
+
+	public function more() {
+		$id= Input::get('q');
+		$current_page = Input::get('current_page');
+		
+		$client = new Solarium\Client($this->solr_endpoint);
+
+		$mltQuery = $client->createMoreLikeThis();
+		//Prepare Query
+		$mltQuery->setQuery("id:$id");
+		$mltQuery->setMltFields('ownername, title, description, comments');
+		$mltQuery->setMinimumDocumentFrequency(1);
+		$mltQuery->setMinimumTermFrequency(1);
+
+		//Pagination
+		$mltQuery->setStart(($current_page -1 ) * $this->imagesPerPage)->setRows($this->imagesPerPage);
+		
+		$mltQuery->setFields(array('id'));
+		$result = $client->select($mltQuery);
+		$ids = array();
+		foreach($result as $document) {
 			$photo = Photo::find($document->id);
 			$ids[]= $photo->toArray();
 		}
